@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Login
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding class="login">
+  <ion-list>
+
+    <ion-item>
+      <ion-label [ngClass]="emailClass ? '' : 'error-ipnut'" floating>Email</ion-label>
+      <ion-input type="text" [(ngModel)]="email" (blur)="blurEmail(email)"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label [ngClass]="passClass ? '' : 'error-ipnut'" floating>Password</ion-label>
+      <ion-input type="password" [(ngModel)]="pass" (blur)="blurPass(pass)"></ion-input>
+    </ion-item>
+
+  </ion-list>
+
+  <button outline class="btn-login" (click)="login(email, pass)">Login</button>
+</ion-content>
