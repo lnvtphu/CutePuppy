@@ -1,25 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { ToastController, NavController  } from 'ionic-angular';
 import { TabsPage } from '../tabs/tabs';
-import { ToastController } from 'ionic-angular';
 
 @Component({
   templateUrl: 'build/pages/login/login.html'
 })
 export class LoginPage {
-
-  public tabs: any;
+   @ViewChild('cuteNav') nav : NavController;
   private emailClass: any;
   private passClass: any;
 
   constructor(public toastCtrl: ToastController) {
     // this tells the tabs component which Pages
     // should be each tab's root Page
-    this.tabs = TabsPage;
     this.emailClass = true;
     this.passClass = true;
   }
   login(email, pass) {
-
+    return TabsPage;
   }
   toastLogin(mess) {
     let toast = this.toastCtrl.create({
