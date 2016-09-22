@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Platform, ionicBootstrap } from 'ionic-angular';
-import { StatusBar, File, Dialogs } from 'ionic-native';
+import { StatusBar, Dialogs, SQLite  } from 'ionic-native';
 import { LoginPage } from './pages/login/login';
 import { TabsPage } from './pages/tabs/tabs';
 
@@ -12,9 +12,6 @@ export class MyApp {
   public rootPage: any;
 
   constructor(private platform: Platform){
-
-    // File.checkDir("", 'BillingLog.txt').then(_ => console.log('yay')).catch(err => console.log('boooh'));
-    // console.log(cordova.file.dataDirectory);
     this.checkLogin();
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
