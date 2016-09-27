@@ -20,7 +20,7 @@ export class MyApp {
     });
   }
   checkLogin(){
-    let check = true;
+    let check = false;
     if(check){
       this.rootPage = TabsPage;
     }else {
