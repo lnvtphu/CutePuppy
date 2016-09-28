@@ -20,12 +20,33 @@ export class MyApp {
     });
   }
   checkLogin(){
-    let check = false;
-    if(check){
-      this.rootPage = TabsPage;
-    }else {
+    let db = new SQLite();
+    db.openDatabase({
+      name: 'data.db',
+      location: 'default' // the location field is required
+    }).then(() => {
+      db.executeSql('select username from user', {}).then((rs) => {
+        console.log(rs);
+        console.log(rs.rows.item(0));
+        if(rs.rows.item(0) != "" || rs.rows.item(0) !="undefined"){
+          this.rootPage = TabsPage;
+        } else{
+          this.rootPage = LoginPage;
+        }
+      }, (err) => {
+        this.rootPage = LoginPage;
+        console.error('Unable to execute sql: ', err);
+      });
+    }, (err) => {
       this.rootPage = LoginPage;
-    }
+      console.error('Unable to open database: ', err);
+    });
+    // let check = false;
+    // if(check){
+    //   this.rootPage = TabsPage;
+    // }else {
+    //   this.rootPage = LoginPage;
+    // }
   }
 }
 

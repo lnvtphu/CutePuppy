@@ -14,10 +14,6 @@ export class LoginPage {
   private emailClass = true;
   private passClass = true;
   private focusMail = false;
-  public loading = LoadingController.prototype.create({
-    content: "Please wait...",
-    dismissOnPageChange: true
-  });
   constructor(public nav: NavController, public toastCtrl: ToastController, public http: Http, public loadingCtrl: LoadingController) {
     // this tells the tabs component which Pages
     // should be each tab's root Page
@@ -25,28 +21,27 @@ export class LoginPage {
   login(email, pass) {
     if(Network.connection == 'none'){
       this.toastLogin('Please connect internet...');
-      return;
-    }
-    if(!email || !pass){
+    }else if(!email || !pass){
       this.blurPass(pass);
       this.blurEmail(email);
       this.toastLogin('Please enter the field!');
-      return;
+    } else if(this.blurEmail(email)){
+      let body = JSON.stringify({
+  			username: email,
+  			password: pass
+  		});
+      let headers = new Headers({ 'Content-Type': 'application/json' });
+      let options = new RequestOptions({ headers: headers });
+      var loadingLogin = this.loading();
+      loadingLogin.present();
+      this.http.post('https://mimomi.herokuapp.com/user', body, options).map(res => res.json() ).subscribe(
+        data => {
+          
+          this.nav.push(TabsPage);
+        },
+        err => {  setTimeout(() => { loadingLogin.dismiss(); }, 1); let error = JSON.parse(err._body); this.toastLogin(error.Error);}
+      );
     }
-    let body = JSON.stringify({
-			username: email,
-			password: pass
-		});
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
-    // var loadingLogin = this.loading();
-    this.loading.present();
-    this.http.put('https://mimomi.herokuapp.com/user', body, options).map(res => res.json() ).subscribe(
-      data => { this.nav.push(TabsPage); },
-      err => { this.loading.dismiss() ; let error = JSON.parse(err._body); this.toastLogin(error.Error);}
-
-        // () => {this.loadingLogin().present();}
-    );
   }
   toastLogin(mess) {
     let toast = this.toastCtrl.create({
@@ -72,11 +67,11 @@ export class LoginPage {
       return this.passClass = true;
     }
   }
-  // loading(){
-  //   let loading = this.loadingCtrl.create({
-  //     content: "Please wait...",
-  //     dismissOnPageChange: true
-  //   });
-  //   return loading;
-  // }
+  loading(){
+    let loading = this.loadingCtrl.create({
+      content: "Please wait...",
+      dismissOnPageChange: true
+    });
+    return loading;
+  }
 }

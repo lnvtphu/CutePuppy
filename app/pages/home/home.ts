@@ -15,8 +15,8 @@ export class HomePage {
       name: 'data.db',
       location: 'default' // the location field is required
     }).then(() => {
-      db.executeSql('create table danceMoves(name varchar(20))', {}).then(() => {
-        this.toastLogin('create oke');
+      db.executeSql('create table user(username varchar(30) , pass varchar(16) )', {}).then(() => {
+        console.log('create');
       }, (err) => {
         console.error('Unable to execute sql: ', err);
       });
@@ -30,8 +30,8 @@ export class HomePage {
       name: 'data.db',
       location: 'default' // the location field is required
     }).then(() => {
-      db.executeSql('select * from danceMoves', {}).then((rs) => {
-        this.toastLogin(rs.rows.item(0));
+      db.executeSql('select username from user', {}).then((rs) => {
+        console.log(rs);
         console.log(rs.rows.item(0));
       }, (err) => {
         console.error('Unable to execute sql: ', err);
@@ -46,8 +46,9 @@ export class HomePage {
       name: 'data.db',
       location: 'default' // the location field is required
     }).then(() => {
-      db.executeSql("insert into danceMoves values('conheo')", {}).then((rs) => {
+      db.executeSql("insert into user (username) values('conheo')", {}).then((rs) => {
         console.log('insert ok');
+        console.log(rs);
         this.toastLogin(rs)
       }, (err) => {
         console.error('Unable to execute sql: ', err);
@@ -62,20 +63,5 @@ export class HomePage {
       duration: 3000
     });
     toast.present();
-  }
-  cmdSQLite(cmd){
-    let db = new SQLite();
-    db.openDatabase({
-      name: 'data.db',
-      location: 'default' // the location field is required
-    }).then(() => {
-      db.executeSql(cmd, {}).then((rs) => {
-        return rs;
-      }, (err) => {
-        return 'errexeccmd';
-      });
-    }, (err) => {
-      return 'erropendata';
-    });
   }
 }
