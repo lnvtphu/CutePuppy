@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { NavController, ToastController } from 'ionic-angular';
+import { NavController, ToastController, NavParams } from 'ionic-angular';
 import { SQLite } from 'ionic-native';
 
 @Component({
   templateUrl: 'build/pages/home/home.html'
 })
 export class HomePage {
-  constructor(public navCtrl: NavController, public toastCtrl: ToastController) {
-
+  constructor(public navCtrl: NavController, public toastCtrl: ToastController, public navParams: NavParams) {
+console.log(navParams.get('conga'));
   }
   create() {
     let db = new SQLite();
@@ -30,7 +30,7 @@ export class HomePage {
       name: 'data.db',
       location: 'default' // the location field is required
     }).then(() => {
-      db.executeSql('select username from user', {}).then((rs) => {
+      db.executeSql('select login from user', {}).then((rs) => {
         console.log(rs);
         console.log(rs.rows.item(0));
       }, (err) => {
@@ -46,7 +46,7 @@ export class HomePage {
       name: 'data.db',
       location: 'default' // the location field is required
     }).then(() => {
-      db.executeSql("insert into user (username) values('conheo')", {}).then((rs) => {
+      db.executeSql("insert into user (login) values(0)", {}).then((rs) => {
         console.log('insert ok');
         console.log(rs);
         this.toastLogin(rs)

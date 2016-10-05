@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { ToastController, NavController, Page, LoadingController } from 'ionic-angular';
 import { TabsPage } from '../tabs/tabs';
 import {Http, Headers, RequestOptions} from '@angular/http';
-import { Network, SpinnerDialog } from 'ionic-native';
+import { Network, SpinnerDialog, SQLite } from 'ionic-native';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -36,8 +36,8 @@ export class LoginPage {
       loadingLogin.present();
       this.http.post('https://mimomi.herokuapp.com/user', body, options).map(res => res.json() ).subscribe(
         data => {
-          
-          this.nav.push(TabsPage);
+          console.log(data);
+          this.nav.push(TabsPage, data);
         },
         err => {  setTimeout(() => { loadingLogin.dismiss(); }, 1); let error = JSON.parse(err._body); this.toastLogin(error.Error);}
       );
@@ -61,11 +61,9 @@ export class LoginPage {
     return this.emailClass = true;
   }
   blurPass(pass) {
-    if (!pass) {
-      return this.passClass = false;
-    } else {
-      return this.passClass = true;
-    }
+    let result;
+    (pass) ? result = true : result = false;
+    return result;
   }
   loading(){
     let loading = this.loadingCtrl.create({
@@ -73,5 +71,8 @@ export class LoginPage {
       dismissOnPageChange: true
     });
     return loading;
+  }
+  registerDB(par : Object){
+
   }
 }
