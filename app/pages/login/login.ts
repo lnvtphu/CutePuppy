@@ -3,18 +3,20 @@ import { ToastController, NavController, Page, LoadingController } from 'ionic-a
 import { TabsPage } from '../tabs/tabs';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { Network, SpinnerDialog, SQLite } from 'ionic-native';
+import { Database } from '../../providers/database/database';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 @Component({
-  templateUrl: 'build/pages/login/login.html'
+  templateUrl: 'build/pages/login/login.html',
+  providers: [Database]
 })
 export class LoginPage {
   private emailClass = true;
   private passClass = true;
   private focusMail = false;
-  constructor(public nav: NavController, public toastCtrl: ToastController, public http: Http, public loadingCtrl: LoadingController) {
+  constructor(public nav: NavController, public toastCtrl: ToastController, public http: Http, public loadingCtrl: LoadingController, private database: Database) {
     // this tells the tabs component which Pages
     // should be each tab's root Page
   }
@@ -37,6 +39,25 @@ export class LoginPage {
       this.http.post('https://mimomi.herokuapp.com/user', body, options).map(res => res.json() ).subscribe(
         data => {
           console.log(data);
+          this.database.registerUser(0, data.username, data.level, data.avatar).then((data) => {
+            console.log(data);
+          }, (error) => {
+            console.log(error);
+          });
+          // let db = new SQLite();
+          // db.openDatabase({
+          //   name: 'data.db',
+          //   location: 'default' // the location field is required
+          // }).then(() => {
+          //   db.executeSql("insert into user(login, username, level, avatar ) values(0, '" + data.username+ "', ' "+data.level +"', '" + data.avatar+ "')", {}).then((rs) => {
+          //     console.log(rs);
+          //   }, (err) => {
+          //     console.error('Unable to execute sql: ', err);
+          //   });
+          // }, (err) => {
+          //   console.error('Unable to open database: ', err);
+          // });
+
           this.nav.push(TabsPage, data);
         },
         err => {  setTimeout(() => { loadingLogin.dismiss(); }, 1); let error = JSON.parse(err._body); this.toastLogin(error.Error);}
@@ -71,8 +92,5 @@ export class LoginPage {
       dismissOnPageChange: true
     });
     return loading;
-  }
-  registerDB(par : Object){
-
   }
 }
