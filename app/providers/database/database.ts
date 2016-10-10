@@ -9,14 +9,14 @@ export class Database {
     if(!this.isOpen){
       this.storage = new SQLite;
       this.storage.openDatabase({name: "data.db", location: "default"}).then( () => {
-        this.storage.executeSql("CREATE TABLE IF NOT EXISTS user(login int, username varchar(30) , level int, avatar varchar(255)) ",[]);
+        this.storage.executeSql("CREATE TABLE IF NOT EXISTS user(username varchar(30) , level int, avatar varchar(255)) ",[]);
         this.isOpen = true;
       });
     }
   }
-  registerUser(login, username, level, avatar){
+  registerUser(username, level, avatar){
     return new Promise((resolve, reject) => {
-      this.storage.executeSql("INSERT INTO user(login, username, level, avatar ) VALUES(?, ?, ?, ?)",[login, username, level, avatar]).then((data) => {
+      this.storage.executeSql("INSERT INTO user(username, level, avatar ) VALUES(?, ?, ?)",[username, level, avatar]).then((data) => {
         resolve(data);
       }, (error) => {
         reject(error);
@@ -34,7 +34,7 @@ export class Database {
   }
   getUser(){
     return new Promise((resolve, reject) => {
-      this.storage.executeSql("SELECT login, avatar, level, username FROM user", []).then((data) => {
+      this.storage.executeSql("SELECT avatar, level, username FROM user", []).then((data) => {
         resolve(data.rows.item(0));
       }, (error) => {
         reject(error);

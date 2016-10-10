@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { ToastController, NavController, Page, LoadingController } from 'ionic-angular';
+import { Component, ViewChild,  } from '@angular/core';
+import { ToastController, NavController, Page, LoadingController, ViewController } from 'ionic-angular';
 import { TabsPage } from '../tabs/tabs';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { Network, SpinnerDialog, SQLite } from 'ionic-native';
@@ -16,10 +16,15 @@ export class LoginPage {
   private emailClass = true;
   private passClass = true;
   private focusMail = false;
-  constructor(public nav: NavController, public toastCtrl: ToastController, public http: Http, public loadingCtrl: LoadingController, private database: Database) {
+  constructor(public nav: NavController, public toastCtrl: ToastController, public http: Http, public loadingCtrl: LoadingController, private database: Database, private viewCtrl: ViewController) {
     // this tells the tabs component which Pages
     // should be each tab's root Page
   }
+  ionViewWillEnter() {
+    console.log("login");
+    this.viewCtrl.showBackButton(false);
+  }
+
   login(email, pass) {
     if(Network.connection == 'none'){
       this.toastLogin('Please connect internet...');
@@ -39,24 +44,11 @@ export class LoginPage {
       this.http.post('https://mimomi.herokuapp.com/user', body, options).map(res => res.json() ).subscribe(
         data => {
           console.log(data);
-          this.database.registerUser(0, data.username, data.level, data.avatar).then((data) => {
+          this.database.registerUser(data.username, data.level, data.avatar).then((data) => {
             console.log(data);
           }, (error) => {
             console.log(error);
           });
-          // let db = new SQLite();
-          // db.openDatabase({
-          //   name: 'data.db',
-          //   location: 'default' // the location field is required
-          // }).then(() => {
-          //   db.executeSql("insert into user(login, username, level, avatar ) values(0, '" + data.username+ "', ' "+data.level +"', '" + data.avatar+ "')", {}).then((rs) => {
-          //     console.log(rs);
-          //   }, (err) => {
-          //     console.error('Unable to execute sql: ', err);
-          //   });
-          // }, (err) => {
-          //   console.error('Unable to open database: ', err);
-          // });
 
           this.nav.push(TabsPage, data);
         },

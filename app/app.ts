@@ -13,69 +13,25 @@ export class MyApp {
 
   public rootPage: any;
   public username: any;
-  constructor(private platform: Platform, private alertCtrl: AlertController, private database: Database){
-    this.username = 'a';
-    // this.creatDB();
-    this.checkLogin();
-    // let check = true;
+  constructor(private platform: Platform, private alertCtrl: AlertController, public database: Database){
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
+      setTimeout(() => {this.checkLogin()}, 500);
       StatusBar.styleDefault();
     });
-    platform.registerBackButtonAction(()=>{
-    });
-  }
-
-  public onPageDidEnter() {
-      this.checkLogin();
+    //register back key
+    // platform.registerBackButtonAction(()=>{
+    // });
   }
 
   public checkLogin(){
     this.database.getUser().then((data) => {
       console.log(data);
-      let user = JSON.stringify(data);
-      let user2 = JSON.parse(user);
-      (user2.login == 0) ? this.rootPage = TabsPage : this.rootPage = LoginPage;
-      // this.rootPage = TabsPage;
+      (typeof data != 'undefined') ? this.rootPage = TabsPage : this.rootPage = LoginPage;
     }, (error) => {
       console.log(error);
       this.rootPage = LoginPage;
-    });
-    // let db = new SQLite();
-    // db.openDatabase({
-    //   name: 'data.db',
-    //   location: 'default' // the location field is required
-    // }).then(() => {
-    //   db.executeSql('select login, avatar, level, username from user', {}).then((rs) => {
-    //     console.log(rs);
-    //     console.log(rs.rows.item(0));
-    //     let login = rs.rows.item(0).login;
-    //     this.username = rs.rows.item(0).username;
-    //     (login == 0) ? this.rootPage = TabsPage : this.rootPage = LoginPage;
-    //   }, (err) => {
-    //     this.rootPage = LoginPage;
-    //     this.creatDB();
-    //     console.error('Unable to execute sql: ', err);
-    //   });
-    // }, (err) => {
-    //   this.rootPage = LoginPage;
-    //   console.error('Unable to open database: ', err);
-    // });
-  }
-  creatDB(){
-    let db = new SQLite();
-    db.openDatabase({
-      name: 'data.db',
-      location: 'default' // the location field is required
-    }).then(() => {
-      db.executeSql('create table user(login int, username varchar(30) , level int, avatar varchar(255))', {}).then((rs) => {
-        console.log(rs);
-      }, (err) => {
-        console.error('Unable to execute sql: ', err);
-      });
-    }, (err) => {
-      console.error('Unable to open database: ', err);
     });
   }
 }
