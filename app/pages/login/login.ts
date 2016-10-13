@@ -44,7 +44,7 @@ export class LoginPage {
       this.http.post('https://mimomi.herokuapp.com/user', body, options).map(res => res.json() ).subscribe(
         data => {
           console.log(data);
-          this.database.registerUser(data.username, data.level, data.avatar).then((data) => {
+          this.database.registerUser(data.id, data.username, data.level, data.avatar).then((data) => {
             console.log(data);
           }, (error) => {
             console.log(error);
